@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Exchange Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Authentication Section -->
+        <div id="auth-section" class="section">
+            <div class="auth-container">
+                <h1>📚 Book Exchange Platform</h1>
+                <p class="subtitle">Share books, build friendships</p>
+                
+                <div class="auth-tabs">
+                    <button class="tab-btn active" onclick="showTab('login')">Login</button>
+                    <button class="tab-btn" onclick="showTab('register')">Register</button>
+                </div>
+
+                <!-- Login Form -->
+                <div id="login-form" class="auth-form active">
+                    <h2>Welcome Back</h2>
+                    <input type="text" id="login-username" placeholder="Username" required>
+                    <input type="password" id="login-password" placeholder="Password" required>
+                    <button onclick="login()" class="btn-primary">Login</button>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form" class="auth-form">
+                    <h2>Create Account</h2>
+                    <input type="text" id="register-username" placeholder="Username" required>
+                    <input type="password" id="register-password" placeholder="Password" required>
+                    <input type="password" id="register-confirm" placeholder="Confirm Password" required>
+                    <button onclick="register()" class="btn-primary">Register</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Application Section -->
+        <div id="app-section" class="section hidden">
+            <!-- Navigation -->
+            <nav class="navbar">
+                <div class="nav-brand">📚 Book Exchange</div>
+                <div class="nav-user">
+                    <span id="username-display"></span>
+                    <button onclick="logout()" class="btn-logout">Logout</button>
+                </div>
+            </nav>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <button class="menu-item active" onclick="showView('my-books')">
+                    <span class="icon">📖</span> My Books
+                </button>
+                <button class="menu-item" onclick="showView('community')">
+                    <span class="icon">🌐</span> Community Books
+                </button>
+                <button class="menu-item" onclick="showView('requests')">
+                    <span class="icon">📬</span> My Requests
+                    <span class="badge" id="requests-badge">0</span>
+                </button>
+                <button class="menu-item" onclick="showView('friends')">
+                    <span class="icon">👥</span> Friends
+                </button>
+                <button class="menu-item" onclick="showView('friend-requests')">
+                    <span class="icon">✉️</span> Friend Requests
+                    <span class="badge" id="friend-requests-badge">0</span>
+                </button>
+                <button class="menu-item" onclick="showView('leaderboard')">
+                    <span class="icon">🏆</span> Leaderboard
+                </button>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="main-content">
+                <!-- My Books View -->
+                <div id="my-books-view" class="view active">
+                    <div class="view-header">
+                        <h2>My Books</h2>
+                        <button onclick="showAddBookModal()" class="btn-primary">+ Add Book</button>
+                    </div>
+                    <div id="my-books-list" class="books-grid"></div>
+                    <button onclick="undoLastBook()" class="btn-secondary" style="margin-top: 20px;">
+                        ↶ Undo Last Addition
+                    </button>
+                </div>
+
+                <!-- Community Books View -->
+                <div id="community-view" class="view">
+                    <div class="view-header">
+                        <h2>Community Books</h2>
+                        <input type="text" id="search-books" placeholder="🔍 Search books..." 
+                               onkeyup="filterBooks()" class="search-input">
+                    </div>
+                    <div id="community-books-list" class="books-grid"></div>
+                </div>
+
+                <!-- Requests View -->
+                <div id="requests-view" class="view">
+                    <div class="view-header">
+                        <h2>Book Requests</h2>
+                    </div>
+                    <div id="requests-list" class="requests-container"></div>
+                </div>
+
+                <!-- Friends View -->
+                <div id="friends-view" class="view">
+                    <div class="view-header">
+                        <h2>My Friends</h2>
+                        <button onclick="showAddFriendModal()" class="btn-primary">+ Add Friend</button>
+                    </div>
+                    <div id="friends-list" class="friends-grid"></div>
+                    
+                    <div class="view-header" style="margin-top: 40px;">
+                        <h2>Friend Suggestions</h2>
+                    </div>
+                    <div id="suggestions-list" class="friends-grid"></div>
+                </div>
+
+                <!-- Friend Requests View -->
+                <div id="friend-requests-view" class="view">
+                    <div class="view-header">
+                        <h2>Friend Requests</h2>
+                    </div>
+                    <div id="friend-requests-list" class="requests-container"></div>
+                </div>
+
+                <!-- Leaderboard View -->
+                <div id="leaderboard-view" class="view">
+                    <div class="view-header">
+                        <h2>🏆 Top Lenders</h2>
+                    </div>
+                    <div id="leaderboard-list" class="leaderboard-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Book Modal -->
+    <div id="add-book-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('add-book-modal')">&times;</span>
+            <h2>Add New Book</h2>
+            <input type="text" id="book-title" placeholder="Book Title" required>
+            <input type="text" id="book-author" placeholder="Author Name" required>
+            <button onclick="addBook()" class="btn-primary">Add Book</button>
+        </div>
+    </div>
+
+    <!-- Add Friend Modal -->
+    <div id="add-friend-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('add-friend-modal')">&times;</span>
+            <h2>Send Friend Request</h2>
+            <input type="text" id="friend-username" placeholder="Username" required>
+            <button onclick="sendFriendRequest()" class="btn-primary">Send Request</button>
+        </div>
+    </div>
+
+    <!-- Rate Lender Modal -->
+    <div id="rate-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('rate-modal')">&times;</span>
+            <h2>Rate Lender</h2>
+            <p id="rate-lender-name"></p>
+            <div class="rating-stars">
+                <span class="star" onclick="setRating(1)">☆</span>
+                <span class="star" onclick="setRating(2)">☆</span>
+                <span class="star" onclick="setRating(3)">☆</span>
+                <span class="star" onclick="setRating(4)">☆</span>
+                <span class="star" onclick="setRating(5)">☆</span>
+            </div>
+            <button onclick="submitRating()" class="btn-primary">Submit Rating</button>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
